@@ -1,0 +1,11 @@
+﻿{
+  "solution": {
+    "path": "taikoclone.sln",
+    "projects": [
+      "taikoclone.Desktop\\taikoclone.Desktop.csproj",
+      "taikoclone.Game\\taikoclone.Game.csproj",
+      "taikoclone.Game.Tests\\taikoclone.Game.Tests.csproj",
+      "taikoclone.Resources\\taikoclone.Resources.csproj"
+    ]
+  }
+}

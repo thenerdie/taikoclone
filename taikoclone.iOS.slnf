@@ -1,0 +1,10 @@
+{
+  "solution": {
+    "path": "taikoclone.sln",
+    "projects": [
+      "taikoclone.Game\\taikoclone.Game.csproj",
+      "taikoclone.Resources\\taikoclone.Resources.csproj",
+      "taikoclone.iOS\\taikoclone.iOS.csproj"
+    ]
+  }
+}
