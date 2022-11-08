@@ -1,3 +1,6 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
@@ -5,48 +8,35 @@ using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Sprites;
 using osu.Framework.Graphics.Textures;
 
-namespace taikoclone.Game
+namespace taikoclone.Game.Components
 {
-    public class SpinningBox : CompositeDrawable
+    public class HitObject : CompositeDrawable
     {
-        private Container box;
-
-        public SpinningBox()
-        {
-            AutoSizeAxes = Axes.Both;
-            Origin = Anchor.Centre;
-        }
+        private Container hitObject;
 
         [BackgroundDependencyLoader]
         private void load(TextureStore textures)
         {
-            InternalChild = box = new Container
+            InternalChild = hitObject = new Container
             {
                 AutoSizeAxes = Axes.Both,
                 Anchor = Anchor.Centre,
                 Origin = Anchor.Centre,
                 Children = new Drawable[]
                 {
-                    new Box
-                    {
-                        RelativeSizeAxes = Axes.Both,
-                        Anchor = Anchor.Centre,
-                        Origin = Anchor.Centre,
-                    },
                     new Sprite
                     {
                         Anchor = Anchor.Centre,
                         Origin = Anchor.Centre,
-                        Texture = textures.Get("barline")
+                        Texture = textures.Get("smalldon")
                     },
                 }
             };
         }
 
-        protected override void LoadComplete()
+        public void SetPosition(float alpha)
         {
-            base.LoadComplete();
-            box.Loop(b => b.RotateTo(0).RotateTo(360, 2500));
+            hitObject.X = 500 - (alpha * 500);
         }
     }
 }
