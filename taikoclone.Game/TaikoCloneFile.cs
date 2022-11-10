@@ -9,6 +9,13 @@ using osu.Framework.Logging;
 
 namespace taikoclone.Game
 {
+    public struct HitObject
+    {
+        public float Time;
+        public int Type;
+        public int Subtype;
+    }
+
     public class TaikoCloneFile
     {
         public string AudioFilename;
@@ -33,13 +40,6 @@ namespace taikoclone.Game
         public List<HitObject> HitObjects;
 
         private enum Section { None, General, Metadata, Editor, HitObjects, TimingPoints, Events, Difficulty }
-
-        public struct HitObject
-        {
-            public float Time;
-            public int Type;
-            public int Subtype;
-        }
 
         public TaikoCloneFile(string file)
         {

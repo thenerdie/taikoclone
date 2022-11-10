@@ -12,9 +12,30 @@ namespace taikoclone.Game.Components
 {
     public class DrawableHitObject : CompositeDrawable
     {
+        public int NoteType;
+        public int NoteSubtype;
+
         [BackgroundDependencyLoader]
         private void load(TextureStore textures)
         {
+            Texture t = null;
+
+            switch (NoteSubtype)
+            {
+                case 1:
+                    t = textures.Get("smalldon");
+                    break;
+                case 2:
+                    t = textures.Get("smallkat");
+                    break;
+                case 3:
+                    t = textures.Get("bigdon");
+                    break;
+                case 4:
+                    t = textures.Get("bigkat");
+                    break;
+            }
+
             InternalChild = new Container
             {
                 X = 0, //800
@@ -28,7 +49,7 @@ namespace taikoclone.Game.Components
                     {
                         Anchor = Anchor.Centre,
                         Origin = Anchor.Centre,
-                        Texture = textures.Get("smalldon")
+                        Texture = t
                     },
                 }
             };
