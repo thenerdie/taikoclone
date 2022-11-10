@@ -3,9 +3,20 @@
     <TargetFramework>netstandard2.1</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="test.tc" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\taikoclone.Resources\taikoclone.Resources.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="ppy.osu.Framework" Version="2022.1101.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="test.tc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="taikocloneGameBase.cs">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Compile>
   </ItemGroup>
 </Project>

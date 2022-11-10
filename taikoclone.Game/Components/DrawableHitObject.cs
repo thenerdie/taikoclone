@@ -10,15 +10,15 @@ using osu.Framework.Graphics.Textures;
 
 namespace taikoclone.Game.Components
 {
-    public class HitObject : CompositeDrawable
+    public class DrawableHitObject : CompositeDrawable
     {
-        private Container hitObject;
-
         [BackgroundDependencyLoader]
         private void load(TextureStore textures)
         {
-            InternalChild = hitObject = new Container
+            InternalChild = new Container
             {
+                X = 0, //800
+                Y = 125,
                 AutoSizeAxes = Axes.Both,
                 Anchor = Anchor.Centre,
                 Origin = Anchor.Centre,
@@ -32,11 +32,6 @@ namespace taikoclone.Game.Components
                     },
                 }
             };
-        }
-
-        public void SetPosition(float alpha)
-        {
-            hitObject.X = 500 - (alpha * 500);
         }
     }
 }

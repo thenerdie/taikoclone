@@ -12,4 +12,9 @@
     <None Remove="Textures\donplaceholder.png" />
     <None Remove="Textures\katplaceholder.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Update="test.tc">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 </Project>

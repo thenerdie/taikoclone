@@ -1,0 +1,35 @@
+﻿[General]
+AudioFilename: audio.mp3
+PreviewTime: 5522
+
+[Editor]
+BeatDivisor: 1
+
+[Metadata]
+Artist: HOME
+ArtistUnicode: HOME
+BeatmapID: 3659526
+BeatmapSetID: 1786469
+Creator: KatK1
+Tags: Summoning Salt Speedrun Electronic Instrumental Before The Night synthwave Randy Goffe 606983 Records
+Title: We're Finally Landing
+TitleUnicode: We're Finally Landing
+Version: And That's Where The Record Stands Today
+
+[Difficulty]
+HPDrainRate: 5.5
+OverallDifficulty: 5
+SliderMultiplier: 1.4
+SliderTickRate: 1
+
+[Events]
+
+[TimingPoints]
+89.99999999999996,5522,0,454,4,5,1
+10,5522,0,454,4,5,0
+
+[HitObjects]
+69522,0,1
+70188,0,2
+70855,0,3
+71522,0,4
