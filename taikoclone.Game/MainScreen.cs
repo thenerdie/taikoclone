@@ -23,7 +23,7 @@ namespace taikoclone.Game
         {
             SpriteText spriteText;
 
-            StreamReader sr = new StreamReader(@"test.tc");
+            StreamReader sr = new StreamReader(@"ez.tc");
             taikoCloneFile = new TaikoCloneFile(sr.ReadToEnd());
 
             InternalChildren = new Drawable[]

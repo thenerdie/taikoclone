@@ -13,6 +13,9 @@
     <None Remove="Textures\katplaceholder.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Update="ez.tc">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="test.tc">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

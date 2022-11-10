@@ -11,6 +11,7 @@ using osu.Framework.Input.Handlers;
 using taikoclone.Game;
 using osu.Framework.Input.Events;
 using osuTK.Input;
+using osu.Framework.Extensions.ObjectExtensions;
 
 namespace taikoclone.Game.Components
 {
@@ -52,7 +53,7 @@ namespace taikoclone.Game.Components
         public List<GameplayHitObject> HitObjects;
 
         private Key[] don = { Key.Slash, Key.N };
-        private Key[] kat = { Key.Slash, Key.N };
+        private Key[] kat = { Key.B, Key.ShiftRight };
 
         public Playfield()
         {
@@ -128,7 +129,10 @@ namespace taikoclone.Game.Components
             if (hitObject.HitObject.Time - currentTime > missMilliseconds)
                 return false;
 
-            RemoveHitObject(hitObject);
+            var check = hitObject.HitObject.Type == 0 && (hitObject.HitObject.Subtype == 1 || hitObject.HitObject.Subtype == 3) ? don : kat;
+
+            if (check.Contains(e.Key))
+                RemoveHitObject(hitObject);
 
             return false;
         }
