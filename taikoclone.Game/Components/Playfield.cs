@@ -33,9 +33,26 @@ namespace taikoclone.Game.Components
         private int hitObjectIndex = 0;
         private double initialTime;
 
+        private double getHitWindow(JudgementType judgementType, double od)
+        {
+            switch (judgementType)
+            {
+                case JudgementType.Great:
+                    return 65 - 3 * od;
+                case JudgementType.Okay:
+                    return 130 - 6 * od;
+                case JudgementType.Miss:
+                    return 195 - 9 * od;
+            }
+
+            return -1;
+        }
+
+        private double od = 7;
         private double scrollSpeedMilliseconds = 1000;
-        private double missMilliseconds = 135;
-        private double okayMilliseconds = 80;
+        private double missMilliseconds;
+        private double okayMilliseconds;
+        private double greatMilliseconds;
 
         private Sprite leftRim;
         private Sprite leftCenter;
@@ -60,6 +77,7 @@ namespace taikoclone.Game.Components
         private enum JudgementType
         {
             Great,
+            Okay,
             Miss
         }
 
@@ -78,6 +96,10 @@ namespace taikoclone.Game.Components
             HitObjects = new List<GameplayHitObject>();
             initialTime = getCurrentTime();
             currentlyPressed = new List<Key>();
+
+            greatMilliseconds = getHitWindow(JudgementType.Great, od);
+            okayMilliseconds = getHitWindow(JudgementType.Okay, od);
+            missMilliseconds = getHitWindow(JudgementType.Miss, od);
         }
 
         [BackgroundDependencyLoader]
@@ -152,7 +174,7 @@ namespace taikoclone.Game.Components
             };
         }
 
-        public void AddHitObject(HitObject hitObject)
+        private void addHitObject(HitObject hitObject)
         {
             var gameplayObject = new GameplayHitObject()
             {
@@ -169,14 +191,14 @@ namespace taikoclone.Game.Components
             HitObjects.Add(gameplayObject);
         }
 
-        public void RemoveHitObject(GameplayHitObject hitObject)
+        private void removeHitObject(GameplayHitObject hitObject)
         {
             hitObjectContainer.Remove(hitObject.DrawableHitObject, true);
 
             HitObjects.Remove(hitObject);
         }
 
-        private void AddJudgement(JudgementType judgementType)
+        private void addJudgement(JudgementType judgementType)
         {
             var judgement = new Sprite()
             {
@@ -187,7 +209,7 @@ namespace taikoclone.Game.Components
 
             judgeContainer.Add(judgement);
 
-            judgement.ScaleTo(1.1f, 140, Easing.Out).Then().ScaleTo(0.9f, 60, Easing.In).FadeOut(100).OnComplete((_) => {
+            judgement.ScaleTo(1.15f, 150, Easing.Out).Then().ScaleTo(0.75f, 30, Easing.In).FadeOut(100).OnComplete((_) => {
                 judgeContainer.Remove(judgement, true);
             });
         }
@@ -226,7 +248,7 @@ namespace taikoclone.Game.Components
                     break;
             }
 
-            sprite?.FadeTo(1).Delay(100).Then().FadeTo(0, 200);
+            sprite?.FadeTo(1).Delay(100).Then().FadeTo(0, 80, Easing.Out);
 
             if (HitObjects.Count == 0)
                 return false;
@@ -238,12 +260,9 @@ namespace taikoclone.Game.Components
 
             var check = hitObject.HitObject.Type == 0 && (hitObject.HitObject.Subtype == 1 || hitObject.HitObject.Subtype == 3) ? don : kat;
 
-            if (check.Contains(e.Key))
-            {
-                RemoveHitObject(hitObject);
+            removeHitObject(hitObject);
 
-                AddJudgement(JudgementType.Great);
-            }
+            addJudgement(check.Contains(e.Key) ? JudgementType.Great : JudgementType.Miss);
 
             return false;
         }
@@ -268,7 +287,7 @@ namespace taikoclone.Game.Components
 
                 if (hitObject.Time - scrollSpeedMilliseconds <= currentTime)
                 {
-                    AddHitObject(hitObject);
+                    addHitObject(hitObject);
 
                     hitObjectIndex++;
                 }
@@ -294,8 +313,8 @@ namespace taikoclone.Game.Components
 
             foreach (var remove in toRemove)
             {
-                RemoveHitObject(remove);
-                AddJudgement(JudgementType.Miss);
+                removeHitObject(remove);
+                addJudgement(JudgementType.Miss);
             }
         }
     }
