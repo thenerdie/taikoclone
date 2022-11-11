@@ -12,6 +12,8 @@ using taikoclone.Game;
 using osu.Framework.Input.Events;
 using osuTK.Input;
 using osu.Framework.Extensions.ObjectExtensions;
+using osuTK;
+using osu.Framework.Logging;
 
 namespace taikoclone.Game.Components
 {
@@ -25,13 +27,20 @@ namespace taikoclone.Game.Components
     {
         public TaikoCloneFile File;
 
+        private TextureStore textureStore;
+
         private double currentTime;
         private int hitObjectIndex = 0;
         private double initialTime;
 
         private double scrollSpeedMilliseconds = 1000;
         private double missMilliseconds = 135;
-        //private double okayMilliseconds = 80;
+        private double okayMilliseconds = 80;
+
+        private Sprite leftRim;
+        private Sprite leftCenter;
+        private Sprite rightRim;
+        private Sprite rightCenter;
 
         private double getCurrentTime()
         {
@@ -48,22 +57,34 @@ namespace taikoclone.Game.Components
             return (num - min) / (max - min);
         }
 
+        private enum JudgementType
+        {
+            Great,
+            Miss
+        }
+
         private Container hitObjectContainer;
+        private Container judgeContainer;
 
         public List<GameplayHitObject> HitObjects;
 
-        private Key[] don = { Key.Slash, Key.N };
+        private Key[] don = { Key.N, Key.Slash };
         private Key[] kat = { Key.B, Key.ShiftRight };
+
+        private List<Key> currentlyPressed;
 
         public Playfield()
         {
             HitObjects = new List<GameplayHitObject>();
             initialTime = getCurrentTime();
+            currentlyPressed = new List<Key>();
         }
 
         [BackgroundDependencyLoader]
         private void load(TextureStore textures)
         {
+            textureStore = textures;
+
             InternalChild = new Container
             {
                 Children = new Drawable[]
@@ -87,9 +108,45 @@ namespace taikoclone.Game.Components
                         Anchor = Anchor.Centre,
                         Texture = textures.Get("judgecircle")
                     },
-                    hitObjectContainer = new Container
+                    leftRim = new Sprite
                     {
-
+                        X = -658,
+                        Y = 128,
+                        Origin = Anchor.CentreLeft,
+                        Texture = textures.Get("leftrim"),
+                        Alpha = 0,
+                    },
+                    leftCenter = new Sprite
+                    {
+                        X = -641,
+                        Y = 128,
+                        Origin = Anchor.CentreLeft,
+                        Texture = textures.Get("leftcenter"),
+                        Alpha = 0,
+                    },
+                    rightRim = new Sprite
+                    {
+                        X = -489,
+                        Y = 128,
+                        Origin = Anchor.CentreRight,
+                        Texture = textures.Get("rightrim"),
+                        Alpha = 0,
+                    },
+                    rightCenter = new Sprite
+                    {
+                        X = -506,
+                        Y = 128,
+                        Origin = Anchor.CentreRight,
+                        Texture = textures.Get("rightcenter"),
+                        Alpha = 0,
+                    },
+                    hitObjectContainer = new Container(),
+                    judgeContainer = new Container()
+                    {
+                        X = -330,
+                        Y = 120,
+                        Scale = new Vector2(0.95f, 0.95f),
+                        Anchor = Anchor.Centre
                     }
                 }
             };
@@ -119,8 +176,58 @@ namespace taikoclone.Game.Components
             HitObjects.Remove(hitObject);
         }
 
+        private void AddJudgement(JudgementType judgementType)
+        {
+            var judgement = new Sprite()
+            {
+                Texture = judgementType == JudgementType.Great ? textureStore.Get("hitgood") : textureStore.Get("hitmiss"),
+                Anchor = Anchor.Centre,
+                Origin = Anchor.Centre,
+            };
+
+            judgeContainer.Add(judgement);
+
+            judgement.ScaleTo(1.1f, 140, Easing.Out).Then().ScaleTo(0.9f, 60, Easing.In).FadeOut(100).OnComplete((_) => {
+                judgeContainer.Remove(judgement, true);
+            });
+        }
+
         protected override bool OnKeyDown(KeyDownEvent e)
         {
+            if (currentlyPressed.Contains(e.Key))
+            {
+                return false;
+            }
+
+            currentlyPressed.Add(e.Key);
+
+            var isKat = Array.FindIndex(kat, el => el == e.Key);
+            var isDon = Array.FindIndex(don, el => el == e.Key);
+
+            Sprite sprite = null;
+
+            switch (isKat)
+            {
+                case 0:
+                    sprite = leftRim;
+                    break;
+                case 1:
+                    sprite = rightRim;
+                    break;
+            }
+
+            switch (isDon)
+            {
+                case 0:
+                    sprite = leftCenter;
+                    break;
+                case 1:
+                    sprite = rightCenter;
+                    break;
+            }
+
+            sprite?.FadeTo(1).Delay(100).Then().FadeTo(0, 200);
+
             if (HitObjects.Count == 0)
                 return false;
 
@@ -132,9 +239,19 @@ namespace taikoclone.Game.Components
             var check = hitObject.HitObject.Type == 0 && (hitObject.HitObject.Subtype == 1 || hitObject.HitObject.Subtype == 3) ? don : kat;
 
             if (check.Contains(e.Key))
+            {
                 RemoveHitObject(hitObject);
 
+                AddJudgement(JudgementType.Great);
+            }
+
             return false;
+        }
+
+        protected override void OnKeyUp(KeyUpEvent e)
+        {
+            if (currentlyPressed.Contains(e.Key))
+                currentlyPressed.Remove(e.Key);
         }
 
         protected override void Update()
@@ -178,6 +295,7 @@ namespace taikoclone.Game.Components
             foreach (var remove in toRemove)
             {
                 RemoveHitObject(remove);
+                AddJudgement(JudgementType.Miss);
             }
         }
     }
